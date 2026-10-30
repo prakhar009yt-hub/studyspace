@@ -1,5 +1,7 @@
 # Deploy Studyspace
 
+To avoid server hosting charges, use [the free personal PC hosting route](FREE_HOSTING.md). This preserves the desktop MUJ login workflow and uses private Tailscale access; your PC stays responsible for uptime and storage.
+
 For the **Vercel website + persistent backend** option, follow [VERCEL.md](VERCEL.md). The `web/` folder is the Vercel project; the Python application continues to run on the persistent backend described below.
 
 ## Supported deployment

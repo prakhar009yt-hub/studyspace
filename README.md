@@ -6,6 +6,8 @@ Studyspace includes light/dark glass themes, searchable semester libraries, back
 
 ## Deploy privately
 
+**No hosting fees:** use your Windows PC as the persistent backend with private Tailscale access. Install/sign in to Tailscale on your PC and phone, then run `.\Start-Free.ps1` from this folder. Your PC must stay awake and online; API usage, electricity and internet are separate. No public internet access or paid server is enabled. See [free personal hosting](docs/FREE_HOSTING.md).
+
 **Vercel:** import the repository with **Root Directory = `web`**, Framework = Other, and set `STUDYSPACE_BACKEND_URL` to your authenticated backend's HTTPS URL. This deploys a lightweight website that embeds/opens the complete existing app. Notes, keys, SQLite and background work stay on a separate persistent server. See the [Vercel setup guide](docs/VERCEL.md); importing the Python repository root as a normal Vercel function will not provide persistent storage.
 
 For a Linux server or Docker Desktop:

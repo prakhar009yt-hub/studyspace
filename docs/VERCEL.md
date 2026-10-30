@@ -1,5 +1,7 @@
 # Vercel website with a persistent Studyspace backend
 
+**Free personal alternative:** the backend can remain on your own Windows PC using Tailscale Serve instead of renting a server. Follow [FREE_HOSTING.md](FREE_HOSTING.md). Your Vercel website can point to that private HTTPS address, but visitors must connect to your Tailscale network. The PC must stay on; it is not independent cloud hosting.
+
 ## What this deploys
 
 The user-facing website lives on Vercel. The existing Streamlit application, SQLite, documents, keys, worker pool, exam plans and LMS session live on **one persistent backend**. The website opens the full app inside a viewport-sized frame, with an **Open directly** link for browsers or login gateways that block embedded sign-in. This preserves existing features without moving private state into a disposable serverless filesystem.
