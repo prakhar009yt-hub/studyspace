@@ -1,0 +1,8 @@
+{
+  "format": "studyspace.study.v1",
+  "semester": 3,
+  "courses": [{"id":"1","name":"Data Structures and Algorithms","semester":3}],
+  "notes": [{"id":"1:trees","course":"Data Structures and Algorithms","unit":"Unit 2","title":"Binary trees · test fixture","hash":"","model":"test-fixture","analysis":{"summary":"A binary tree has at most two children per node. Inorder traversal visits the left subtree, root, then right subtree.","topics":[{"name":"Binary tree traversal","concepts":["Inorder: left, root, right. For a binary search tree, this produces sorted keys."],"definitions":["Leaf: a node with no children."],"prerequisites":["Recursion"],"difficulty":"intermediate","source_pages":[],"videos":[]}],"quiz":[{"question":"Which traversal yields sorted keys in a binary search tree?","answer":"Inorder traversal","explanation":"Left keys are smaller than the root; right keys are larger.","options":["Preorder","Inorder","Postorder"]}],"flashcards":[{"front":"How many children can a binary tree node have?","back":"At most two."}]}}],
+  "progress": {},
+  "plan": null
+}

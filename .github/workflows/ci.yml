@@ -20,6 +20,11 @@ jobs:
           python scripts/package_companion.py
           git diff --exit-code -- web/downloads/Studyspace-Windows.zip
       - run: node --test web/build.test.mjs
+      - name: Verify browser extension and viewer bundle
+        run: |
+          python scripts/package_extension.py
+          git diff --exit-code -- web/downloads/Studyspace-Extension-Test.zip web/study-core.mjs web/workspace.css web/privacy.html
+          node --test extension/tests/*.test.mjs
       - run: node --check web/app.js
       - run: node web/build.mjs
         env:

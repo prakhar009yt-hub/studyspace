@@ -1,0 +1,40 @@
+STUDYSPACE FOR MUJ - TEST EDITION 0.1.0
+
+1. Extract this ZIP. Keep the extracted folder in a permanent location.
+2. Chrome: chrome://extensions | Edge: edge://extensions
+3. Enable Developer mode, choose Load unpacked, and select the
+   Studyspace-Extension folder containing manifest.json.
+4. Click the extension icon. Sign into MUJ in the SAME browser profile.
+5. Find my subjects, choose your semester, and assign unknown semesters.
+   Labs are excluded. Only the chosen semester is fetched.
+6. Enter your own Gemini API key and a model ID available to your key.
+   Optionally enter a YouTube Data API v3 key for video lookup.
+7. Confirm note transmission to Google, then Fetch & analyze semester.
+   Keep this tab open. No localhost server or Python is needed.
+8. Save study JSON. Open it at:
+   https://studyspace-amber-seven.vercel.app/study.html
+9. Save a new JSON after progress or plan changes. Back up your file.
+10. Next time, import your saved JSON into the extension BEFORE syncing
+    to reuse analysis of unchanged files. Reconnect MUJ each session.
+
+KEYS
+Gemini: https://aistudio.google.com/apikey
+YouTube: in Google Cloud Console, create/select a project, enable
+YouTube Data API v3, then APIs & Services > Credentials > Create credentials
+> API key. Restrict the key to YouTube Data API v3. Never publish your key.
+Keys stay only in this extension tab's memory; they are not in study JSON.
+Usage follows your Google quota/billing. There is no artificial daily cap.
+
+LIMITS
+This is a test build, not a store-published or university-approved extension.
+Actual MUJ access depends on its API policy and your session. A 401/403 can
+require re-login or an approved university API application. Access controls
+are never bypassed. Unsupported links/pages must be exported manually.
+PDF, PPTX, DOCX, TXT, MD up to 50 MB per file. Older DOC/PPT need PDF export.
+Office vector diagrams/layout may be incomplete; prefer PDF for fidelity.
+Analysis sends notes directly to Google. Read privacy.html before use.
+Do not share notes you are not allowed to distribute. Keep your study JSON
+private. Closing the tab before saving loses unsaved work.
+
+To update: replace the extracted files and click Reload on the extension
+card. To remove: choose Remove in the browser's extensions page.

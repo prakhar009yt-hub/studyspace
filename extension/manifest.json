@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Studyspace for MUJ · Test Edition",
+  "version": "0.1.0",
+  "description": "Fetch your permitted MUJ notes, analyze with your own Google keys, and save a local JSON study file. No localhost server.",
+  "minimum_chrome_version": "120",
+  "permissions": ["downloads"],
+  "optional_host_permissions": [
+    "https://mujlms.manipal.edu/*",
+    "https://generativelanguage.googleapis.com/*",
+    "https://www.googleapis.com/*"
+  ],
+  "action": { "default_title": "Open Studyspace" },
+  "background": { "service_worker": "background.mjs", "type": "module" },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; connect-src https://mujlms.manipal.edu https://generativelanguage.googleapis.com https://www.googleapis.com; img-src 'self' data:; base-uri 'none'; frame-ancestors 'none'"
+  }
+}

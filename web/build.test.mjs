@@ -22,12 +22,14 @@ test('build output contains only static files and public backend configuration',
   process.env.GEMINI_API_KEY = 'fixture-do-not-publish';
   try {
     await build('https://study.example.com', { output });
-    assert.deepEqual((await readdir(output)).sort(), ['app.js', 'config.js', 'downloads', 'favicon.svg', 'index.html', 'styles.css']);
+    assert.deepEqual((await readdir(output)).sort(), ['app.js', 'companion.html', 'config.js', 'downloads', 'favicon.svg', 'index.html', 'privacy.html', 'study-core.mjs', 'study.html', 'study.mjs', 'styles.css', 'theme.mjs', 'workspace.css']);
     const config = await readFile(join(output, 'config.js'), 'utf8');
     assert.match(config, /https:\/\/study\.example\.com\//);
     assert.ok(!config.includes('fixture-do-not-publish'));
     const html = await readFile(join(output, 'index.html'), 'utf8');
-    assert.ok(html.includes('Open my workspace'));
+    assert.ok(html.includes('Open my study file'));
+    assert.ok(!html.includes('127.0.0.1'));
+    assert.ok((await readFile(join(output, 'downloads/Studyspace-Extension-Test.zip'))).length > 0);
   } finally {
     if (prior === undefined) delete process.env.GEMINI_API_KEY;
     else process.env.GEMINI_API_KEY = prior;

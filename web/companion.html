@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="dark light">
+  <meta name="description" content="Your Studyspace workspace: course notes, clear concepts, study videos and exam plans.">
+  <title>Studyspace · Your study workspace</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#workspace">Skip to workspace</a>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Studyspace home"><span class="logo" aria-hidden="true">s.</span><span>studyspace<span class="spark" aria-hidden="true">✦</span></span></a>
+    <div class="actions"><span class="connection" id="connection">Your study workspace</span><button class="icon-button" id="theme" aria-label="Switch to light mode" title="Switch theme">☀</button><a id="direct" class="button secondary" hidden target="_blank" rel="noopener noreferrer">Open directly ↗</a></div>
+  </header>
+  <main id="workspace" tabindex="-1">
+    <section class="welcome" id="welcome">
+      <div class="eyebrow">A LITTLE FOCUS GOES A LONG WAY</div>
+      <h1>Less overwhelm.<br><span>More understanding.</span></h1>
+      <p class="intro">Your notes, your next breakthrough, and a plan that works for you. All together in your study workspace.</p>
+      <div class="feature-row"><span>▤ Organized notes</span><span>▷ Study videos</span><span>◷ Exam plans</span></div>
+      <button id="launch" class="button primary" disabled>Open my workspace <span aria-hidden="true">→</span></button>
+      <p class="hint">Your workspace opens through your private backend. Sign in there if prompted.</p>
+      <section id="local-setup" class="local-setup" hidden aria-label="Install the local companion">
+        <h2>Your computer does the work.</h2>
+        <p>Downloads, analysis, API keys and saved notes stay on your own computer. Install the Windows companion once, then open it whenever you study.</p>
+        <ol><li>Install Python 3.11 or newer.</li><li>Download and extract the companion ZIP.</li><li>Run <strong>Setup.cmd</strong> once, then <strong>Studyspace.cmd</strong>.</li></ol>
+        <a class="button secondary" href="/downloads/Studyspace-Windows.zip" download>Download Windows companion ↓</a>
+        <a class="setup-link" href="https://www.python.org/downloads/windows/" target="_blank" rel="noopener noreferrer">Get Python ↗</a>
+        <p class="small">No hosting subscription. Your own API quotas and charges still apply. The companion requires Windows; your files are not uploaded to Vercel. Analyzing notes sends their content to Gemini.</p>
+      </section>
+      <div class="notice" id="notice" role="status" aria-live="polite">Preparing your workspace…</div>
+      <noscript><p>Enable JavaScript to open the connected workspace.</p></noscript>
+    </section>
+    <section class="workspace-frame" id="frame-section" hidden aria-label="Studyspace app">
+      <div id="loading" class="loading" role="status">Opening your workspace…</div>
+      <iframe id="app-frame" title="Studyspace notes, videos and exam planner" referrerpolicy="no-referrer" allow="fullscreen; loopback-network http://127.0.0.1:8765; local-network-access http://127.0.0.1:8765" allowfullscreen></iframe>
+      <div class="frame-help" id="frame-help" hidden>Workspace not visible? Your sign-in gateway may require a separate tab. <a id="fallback" target="_blank" rel="noopener noreferrer">Open and sign in directly ↗</a><button id="reload" class="text-button">Reload workspace</button></div>
+    </section>
+  </main>
+  <footer id="footer">A calmer place to learn. Built around your notes, your pace, your goals.</footer>
+</body>
+</html>
