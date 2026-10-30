@@ -33,7 +33,7 @@ class CompanionTests(unittest.TestCase):
         runner = load_module('local_companion', ROOT / 'companion/local_companion.py')
         self.assertFalse(runner.owns_process(None))
         self.assertFalse(runner.owns_process(-1))
-        with patch.object(runner.os, 'name', 'nt'), patch.object(runner.subprocess, 'run') as run:
+        with patch.object(runner.os, 'name', 'nt'), patch.object(runner.subprocess, 'CREATE_NO_WINDOW', 0, create=True), patch.object(runner.subprocess, 'run') as run:
             run.return_value.returncode = 0
             run.return_value.stdout = 'python some-other-app.py'
             self.assertFalse(runner.owns_process(123))
