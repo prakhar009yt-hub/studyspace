@@ -1,4 +1,32 @@
-# Vercel website with a persistent Studyspace backend
+# Deploy the Studyspace website on Vercel
+
+## Default: each user's own local computer
+
+This is the selected free mode. Vercel hosts the launcher and the Windows companion download. Each user runs Python, Streamlit, downloads, analysis, their API keys and saved notes **on their own Windows computer**. The website opens `http://127.0.0.1:8765/` in a separate tab after the user starts the companion. It does not run Python, install software, read local notes, or probe the local network automatically.
+
+Vercel import settings:
+
+| Setting | Value |
+| --- | --- |
+| Repository | `prakhar009yt-hub/studyspace` |
+| Root Directory | `web` |
+| Framework Preset | Other |
+| Node.js | 24.x |
+| Build Command | `npm run build` |
+| Output Directory | `dist` |
+| Environment | `STUDYSPACE_MODE=local` |
+
+No `STUDYSPACE_BACKEND_URL`, Gemini key or YouTube key is needed on Vercel in local mode. Explicit `STUDYSPACE_MODE=local` overrides any older backend URL. API keys are entered only in each user's local Settings. No paid backend service is required. Provider quotas/billing remain separate from hosting.
+
+After deploying, download/extract the companion from the website. Install Python 3.11+ if needed, run `Setup.cmd` once, then `Studyspace.cmd`. Full instructions and limitations are in [LOCAL_COMPANION.md](LOCAL_COMPANION.md). The ZIP contains reviewed application source only; it is intended for distribution with the website and contains no user notes, keys or sessions.
+
+The launcher deliberately uses a user-clicked **new localhost tab** rather than depending on cross-origin framing. Public HTTPS websites connecting to local services can encounter browser local-network permissions and mixed-content restrictions. The site does not disable browser security, app CORS or XSRF protection. Windows is the supported companion platform; a phone cannot execute this companion.
+
+The sections below describe the **optional remote backend mode**, which is no longer required for the selected per-computer setup.
+
+---
+
+# Optional: persistent remote backend
 
 **Free personal alternative:** the backend can remain on your own Windows PC using Tailscale Serve instead of renting a server. Follow [FREE_HOSTING.md](FREE_HOSTING.md). Your Vercel website can point to that private HTTPS address, but visitors must connect to your Tailscale network. The PC must stay on; it is not independent cloud hosting.
 

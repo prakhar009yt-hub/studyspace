@@ -22,7 +22,7 @@ test('build output contains only static files and public backend configuration',
   process.env.GEMINI_API_KEY = 'fixture-do-not-publish';
   try {
     await build('https://study.example.com', { output });
-    assert.deepEqual((await readdir(output)).sort(), ['app.js', 'config.js', 'favicon.svg', 'index.html', 'styles.css']);
+    assert.deepEqual((await readdir(output)).sort(), ['app.js', 'config.js', 'downloads', 'favicon.svg', 'index.html', 'styles.css']);
     const config = await readFile(join(output, 'config.js'), 'utf8');
     assert.match(config, /https:\/\/study\.example\.com\//);
     assert.ok(!config.includes('fixture-do-not-publish'));
@@ -33,4 +33,16 @@ test('build output contains only static files and public backend configuration',
     else process.env.GEMINI_API_KEY = prior;
     await rm(output, { recursive: true, force: true });
   }
+});
+test('local mode uses each visitor’s loopback companion without a backend or API key', async () => {
+  const output = await mkdtemp(join(tmpdir(), 'studyspace-local-'));
+  try {
+    await build(undefined, { output });
+    const config = await readFile(join(output, 'config.js'), 'utf8');
+    assert.match(config, /"mode":"local"/);
+    assert.match(config, /http:\/\/127\.0\.0\.1:8765\//);
+    assert.ok((await readFile(join(output, 'downloads/Studyspace-Windows.zip'))).length > 0);
+    await build('https://unused.example.com', { output, mode: 'local' });
+    assert.ok(!(await readFile(join(output, 'config.js'), 'utf8')).includes('unused.example.com'));
+  } finally { await rm(output, { recursive: true, force: true }); }
 });

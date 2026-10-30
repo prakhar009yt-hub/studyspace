@@ -1,0 +1,26 @@
+STUDYSPACE WINDOWS COMPANION
+
+1. Install Python 3.11 or newer from https://www.python.org/downloads/windows/
+2. Extract this entire ZIP to a permanent folder such as Documents\Studyspace.
+3. Double-click Setup.cmd once. It installs Python packages and Chromium locally.
+4. Double-click Studyspace.cmd whenever you want to study.
+5. The browser opens http://127.0.0.1:8765/. Add your own API keys in Settings.
+6. Connect MUJ LMS and sign in yourself in the browser on this computer.
+
+The Vercel website is a launcher. Files, downloads, notes, plans, keys, worker
+processes and the saved MUJ session belong to each user's local computer.
+Gemini receives notes you analyze. YouTube/Gemini calls use your own keys and
+provider quotas; this bundle does not provide free API credits.
+
+Keep the app running when opening it from the Vercel website. Browser local
+network permission or embedding restrictions may apply; Open locally in a new
+tab is the reliable option. Phones cannot run this Windows Python companion.
+
+No public tunnel, firewall change, startup task, paid server or system service
+is installed. The app binds only to 127.0.0.1:8765. Your work is under data/ in
+this folder; credentials are outside the folder in your Windows user profile.
+Do not delete the extracted folder or replace data/ when updating the app.
+
+To stop the local app, use Task Manager to end the Python process whose command
+line runs this folder's dashboard.py with --server.port=8765. Do not end other
+Python jobs. Restart using Studyspace.cmd. No notes are deleted by stopping.

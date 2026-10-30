@@ -20,20 +20,23 @@ export function validateBackend(value, allowLocal = false) {
   return url.origin + '/';
 }
 
-export async function build(value, { output = resolve(root, 'dist'), allowLocal = false } = {}) {
-  const backend = validateBackend(value, allowLocal);
+export async function build(value, { output = resolve(root, 'dist'), allowLocal = false, mode = value ? 'remote' : 'local' } = {}) {
+  if (!['local', 'remote'].includes(mode)) throw new Error('STUDYSPACE_MODE must be local or remote.');
+  const backend = mode === 'local' ? 'http://127.0.0.1:8765/' : validateBackend(value, allowLocal);
   await mkdir(output, { recursive: true });
   for (const file of ['index.html', 'styles.css', 'app.js', 'favicon.svg']) {
     await copyFile(resolve(root, file), resolve(output, file));
   }
+  await mkdir(resolve(output, 'downloads'), { recursive: true });
+  await copyFile(resolve(root, 'downloads/Studyspace-Windows.zip'), resolve(output, 'downloads/Studyspace-Windows.zip'));
   // This URL is public configuration. No provider keys or environment dumps.
-  await writeFile(resolve(output, 'config.js'), 'window.STUDYSPACE_CONFIG = Object.freeze(' + JSON.stringify({ backend }).replaceAll('<', '\\u003c') + ');\n');
+  await writeFile(resolve(output, 'config.js'), 'window.STUDYSPACE_CONFIG = Object.freeze(' + JSON.stringify({ backend, mode }).replaceAll('<', '\\u003c') + ');\n');
   return output;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   try {
-    await build(process.env.STUDYSPACE_BACKEND_URL, { allowLocal: process.argv.includes('--allow-local') && process.env.VERCEL !== '1' });
+    await build(process.env.STUDYSPACE_BACKEND_URL, { mode: process.env.STUDYSPACE_MODE || (process.env.STUDYSPACE_BACKEND_URL ? 'remote' : 'local'), allowLocal: process.argv.includes('--allow-local') && process.env.VERCEL !== '1' });
     console.log('Studyspace web build ready in web/dist. Provider keys remain on the backend.');
   } catch (error) {
     console.error(error.message);

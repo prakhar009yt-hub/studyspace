@@ -1,5 +1,7 @@
 # Personal hosting without server charges
 
+**Latest selected setup:** host the website on Vercel while every visitor runs their own local companion. No Tailscale is required. Follow [LOCAL_COMPANION.md](LOCAL_COMPANION.md). The instructions below remain an optional way to reach one PC from your own other devices.
+
 Use the full Studyspace app on your existing Windows PC, and reach it privately from your phone or another computer using Tailscale Serve. Your existing notes, exam plans, settings, keys and manual MUJ login stay on the PC. No paid VPS, Render disk, custom domain or Docker installation is required for this route.
 
 This is **personal remote access**, not an always-on public cloud deployment. Your PC must remain on, awake, connected to the internet, and running Studyspace. Electricity/internet and any Google API charges are separate. A VPN does not increase API quotas or convert paid provider calls into free ones. Tailscale currently offers a free personal option; verify eligibility and limits in [its current pricing](https://tailscale.com/pricing). No paid plan or billing upgrade is selected by the helper.

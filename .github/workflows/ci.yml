@@ -12,6 +12,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Verify downloadable companion matches sources
+        run: |
+          python scripts/package_companion.py
+          git diff --exit-code -- web/downloads/Studyspace-Windows.zip
       - run: node --test web/build.test.mjs
       - run: node --check web/app.js
       - run: node web/build.mjs

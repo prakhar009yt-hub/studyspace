@@ -6,9 +6,9 @@ Studyspace includes light/dark glass themes, searchable semester libraries, back
 
 ## Deploy privately
 
-**No hosting fees:** use your Windows PC as the persistent backend with private Tailscale access. Install/sign in to Tailscale on your PC and phone, then run `.\Start-Free.ps1` from this folder. Your PC must stay awake and online; API usage, electricity and internet are separate. No public internet access or paid server is enabled. See [free personal hosting](docs/FREE_HOSTING.md).
+**Free default: Vercel website + each user's own computer.** Deploy `web/` with `STUDYSPACE_MODE=local`. Visitors download the Windows companion, extract it, run `Setup.cmd` once, and use `Studyspace.cmd` to open their own local app on port 8765. Files, LMS login, keys, downloads and background work remain on that user's PC. No remote backend, Docker, Tailscale, custom domain or hosting subscription is needed for this mode. The companion requires Python 3.11+ and Windows; API usage and electricity/internet are separate. See [the setup guide](docs/LOCAL_COMPANION.md).
 
-**Vercel:** import the repository with **Root Directory = `web`**, Framework = Other, and set `STUDYSPACE_BACKEND_URL` to your authenticated backend's HTTPS URL. This deploys a lightweight website that embeds/opens the complete existing app. Notes, keys, SQLite and background work stay on a separate persistent server. See the [Vercel setup guide](docs/VERCEL.md); importing the Python repository root as a normal Vercel function will not provide persistent storage.
+**Optional shared/private server mode:** deploy `web/` with `STUDYSPACE_MODE=remote` and `STUDYSPACE_BACKEND_URL` set to an authenticated backend's HTTPS URL. Notes, keys, SQLite and background work then stay on that separate persistent server. See [Vercel deployment modes](docs/VERCEL.md). Importing the Python repository root as a normal Vercel function will not provide persistent storage.
 
 For a Linux server or Docker Desktop:
 
