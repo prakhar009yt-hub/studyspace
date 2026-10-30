@@ -1,6 +1,8 @@
 # Browser test edition
 
-The static Vercel website can now work with a Chrome/Edge Manifest V3 extension and a local JSON file. The Python dashboard and Windows companion remain separate supported options; they are not required for this browser workflow.
+The static Vercel website works with a Chrome/Edge Manifest V3 extension and a local JSON file on **Windows and macOS**. The same ZIP supports both operating systems, including Intel and Apple Silicon Macs, without a native executable or Python. Chrome 120+ or a current Edge release is required for the extension; Safari, Firefox and mobile extension installation are not supported. The Python dashboard and Windows companion remain separate options.
+
+On Windows, right-click the ZIP and choose Extract All. On Mac, double-click it in Finder. Keep the extracted folder in Documents and choose its inner Studyspace-Extension folder when loading the extension. The website includes a keyboard-accessible Windows/Mac setup selector and a synthetic example workspace. A study JSON can be moved between computers; API keys must be re-entered and MUJ signed into separately on each browser profile. macOS CI checks source packaging and Node behavior; it is not a live authenticated MUJ test or a native Mac browser test.
 
 ## Install and use
 

@@ -1,4 +1,11 @@
-STUDYSPACE FOR MUJ - TEST EDITION 0.1.0
+STUDYSPACE FOR MUJ - TEST EDITION 0.1.1 - WINDOWS AND MAC
+
+The SAME ZIP works in Chrome or Edge on Windows and macOS. No Python,
+native executable, localhost server, or OS-specific installer is needed.
+Windows: right-click ZIP > Extract All. Mac: double-click ZIP in Finder.
+Keep the extracted folder in Documents rather than deleting it after setup.
+Use Chrome 120+ or a current Edge release. Safari, Firefox and mobile
+browsers cannot load this Chromium Manifest V3 test extension.
 
 1. Extract this ZIP. Keep the extracted folder in a permanent location.
 2. Chrome: chrome://extensions | Edge: edge://extensions

@@ -1,21 +1,36 @@
 import { normalizeStudy, exportStudy, topicKey, makePlan } from './study-core.mjs';
+import { demoStudy } from './demo.mjs';
 const $=id=>document.getElementById(id);let study,dirty=false;
 function element(tag,text,className){const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(className)el.className=className;return el;}
 function change(){dirty=true;$('status').textContent='Unsaved changes. Save a new study JSON to keep your progress and plan.';}
 function details(title,content){const el=element('details');el.append(element('summary',title));for(const c of content)el.append(c);return el;}
-$('open').addEventListener('change',async event=>{
-  try{
-    const file=event.target.files[0];if(!file)return;if(file.size>30*1024*1024)throw new Error('Study file exceeds the 30 MB limit.');
-    if(dirty&&!confirm('Replace unsaved changes with this study file?'))return;
-    const next=normalizeStudy(JSON.parse(await file.text()));study=next;dirty=false;
+function loadStudy(input,name){
+    const next=normalizeStudy(input);study=next;dirty=false;
     $('workspace').hidden=false;$('empty').hidden=true;$('save').disabled=false;
     $('course').replaceChildren(new Option('All subjects',''));
     const names=[...new Set(study.notes.map(n=>n.course))].sort();for(const name of names)$('course').add(new Option(name,name));
-    $('stats').textContent=`Semester ${study.semester} · ${names.length} subjects · ${study.notes.length} analyzed notes · ${study.notes.reduce((s,n)=>s+n.analysis.topics.length,0)} topics`;
-    $('status').textContent=`Opened ${file.name}. This file stays in your browser tab.`;if(study.plan){$('exam').value=study.plan.exam;$('minutes').value=study.plan.daily;}
+    const count=(n,word)=>`${n} ${word}${n===1?'':'s'}`;
+    $('stats').textContent=`Semester ${study.semester} · ${count(names.length,'subject')} · ${count(study.notes.length,'analyzed note')} · ${count(study.notes.reduce((s,n)=>s+n.analysis.topics.length,0),'topic')}`;
+    $('status').textContent=`Opened ${name}. This file stays in your browser tab.`;$('search').value='';$('exam').value=study.plan?.exam||'';$('minutes').value=study.plan?.daily||120;
     render();renderPlan();
-  }catch(error){$('status').textContent='Could not open file: '+error.message;}finally{event.target.value='';}
+}
+async function openFile(file){
+  try{
+    if(!file)return;if(file.size>30*1024*1024)throw new Error('Study file exceeds the 30 MB limit.');
+    if(dirty&&!confirm('Replace unsaved changes with this study file?'))return;
+    loadStudy(JSON.parse(await file.text()),file.name);
+  }catch(error){$('status').textContent='Could not open file: '+error.message;}
+}
+$('open').addEventListener('change',async event=>{
+  await openFile(event.target.files[0]);event.target.value='';
 });
+const drop=$('empty');
+for(const name of ['dragenter','dragover'])drop.addEventListener(name,event=>{event.preventDefault();drop.classList.add('dragging');});
+for(const name of ['dragleave','drop'])drop.addEventListener(name,()=>drop.classList.remove('dragging'));
+drop.addEventListener('drop',event=>{event.preventDefault();if(event.dataTransfer.files.length!==1){$('status').textContent='Drop one study JSON at a time.';return;}openFile(event.dataTransfer.files[0]);});
+$('demo').addEventListener('click',()=>loadStudy(structuredClone(demoStudy),'example workspace · synthetic data'));
+if(new URLSearchParams(location.search).get('demo')==='1')loadStudy(structuredClone(demoStudy),'example workspace · synthetic data');
+document.addEventListener('keydown',event=>{if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'&&study){event.preventDefault();$('search').focus();}});
 $('save').addEventListener('click',()=>{
   if(!study)return;const url=URL.createObjectURL(new Blob([exportStudy(study)],{type:'application/json'}));const a=element('a');a.href=url;a.download=`Studyspace-semester-${study.semester}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);dirty=false;$('status').textContent='Download requested. Check your Downloads folder for the updated study file.';
 });

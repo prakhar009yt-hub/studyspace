@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Studyspace for MUJ · Test Edition",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Fetch your permitted MUJ notes, analyze with your own Google keys, and save a local JSON study file. No localhost server.",
   "minimum_chrome_version": "120",
   "permissions": ["downloads"],
