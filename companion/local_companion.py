@@ -12,6 +12,9 @@ import venv
 import webbrowser
 
 ROOT = Path(__file__).resolve().parent
+if not (ROOT / 'dashboard.py').exists() and (ROOT.parent / 'dashboard.py').exists():
+    # Also support running the helper directly from the source checkout.
+    ROOT = ROOT.parent
 PORT = 8765
 URL = f'http://127.0.0.1:{PORT}/'
 
@@ -47,7 +50,7 @@ def owns_process(pid):
     return result.returncode == 0 and str(ROOT).casefold() in value and 'dashboard.py' in value and f'--server.port={PORT}' in value
 
 
-def start():
+def start(open_browser=True):
     python = ROOT / '.venv/Scripts/python.exe'
     if not python.exists():
         raise RuntimeError('Run Setup.cmd first.')
@@ -77,7 +80,8 @@ def start():
             time.sleep(.5)
     print(f'Studyspace runs on your computer: {URL}')
     print('Keep this computer running. Notes, downloads, keys and LMS login stay local; analysis still sends note content to Gemini.')
-    webbrowser.open(URL)
+    if open_browser:
+        webbrowser.open(URL)
 
 
 def main():
@@ -85,9 +89,10 @@ def main():
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--install', action='store_true')
     group.add_argument('--start', action='store_true')
+    parser.add_argument('--no-browser', action='store_true', help='Start the local server without opening a tab')
     args = parser.parse_args()
     try:
-        install() if args.install else start()
+        install() if args.install else start(open_browser=not args.no_browser)
     except (OSError, RuntimeError, subprocess.CalledProcessError) as exc:
         print(str(exc), file=sys.stderr)
         return 1

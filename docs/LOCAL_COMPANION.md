@@ -15,6 +15,8 @@ AI processing still sends analyzed documents to Gemini and video requests to Goo
 
 ## First use
 
+**Already using this installed source checkout?** Double-click `Start-Local.cmd` in the project root instead of downloading another copy. This starts the correct port 8765 with your existing project library. Merely opening the development app on 8503 does not start the endpoint used by the Vercel launcher.
+
 1. Open the deployed Vercel website on your **Windows PC**.
 2. Download the Windows companion ZIP and extract **all files** to a permanent folder such as `Documents\Studyspace`. Do not run it from inside the ZIP.
 3. Install Python 3.11 or newer from [python.org](https://www.python.org/downloads/windows/) if not installed.

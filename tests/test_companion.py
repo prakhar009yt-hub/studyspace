@@ -31,6 +31,7 @@ class CompanionTests(unittest.TestCase):
 
     def test_companion_does_not_adopt_an_unrelated_process(self):
         runner = load_module('local_companion', ROOT / 'companion/local_companion.py')
+        self.assertEqual(runner.ROOT, ROOT)
         self.assertFalse(runner.owns_process(None))
         self.assertFalse(runner.owns_process(-1))
         with patch.object(runner.os, 'name', 'nt'), patch.object(runner.subprocess, 'CREATE_NO_WINDOW', 0, create=True), patch.object(runner.subprocess, 'run') as run:

@@ -20,6 +20,8 @@ Open `http://127.0.0.1:8501`. Named volumes persist notes, preferences and priva
 
 ## Start on Windows
 
+If this checkout is already installed, double-click **Start-Local.cmd**. It starts/reuses this project's companion on `http://127.0.0.1:8765/`, matching the Vercel website's **Open local workspace** link. The separate development server on port 8503 is not a substitute for starting port 8765.
+
 Open PowerShell in this project folder:
 
 ```powershell
