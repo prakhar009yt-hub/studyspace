@@ -1,0 +1,24 @@
+# Optional HTTPS gateway for the persistent backend used by the Vercel website.
+# Keep studyspace's own port bound to loopback in compose.yaml.
+services:
+  gateway:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - studyspace
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      STUDYSPACE_BACKEND_DOMAIN: ${STUDYSPACE_BACKEND_DOMAIN:?Set your backend domain}
+      STUDYSPACE_FRONTEND_ORIGIN: ${STUDYSPACE_FRONTEND_ORIGIN:?Set the exact Vercel HTTPS origin}
+      STUDYSPACE_LOGIN: ${STUDYSPACE_LOGIN:?Set the workspace login name}
+      STUDYSPACE_PASSWORD_HASH: ${STUDYSPACE_PASSWORD_HASH:?Generate a password hash using caddy hash-password}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - studyspace-tls:/data
+      - studyspace-gateway-config:/config
+
+volumes:
+  studyspace-tls:
+  studyspace-gateway-config:

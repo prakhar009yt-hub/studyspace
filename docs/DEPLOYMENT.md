@@ -1,5 +1,7 @@
 # Deploy Studyspace
 
+For the **Vercel website + persistent backend** option, follow [VERCEL.md](VERCEL.md). The `web/` folder is the Vercel project; the Python application continues to run on the persistent backend described below.
+
 ## Supported deployment
 
 Studyspace is a Python/Streamlit server, not a static site. GitHub stores its source and runs checks; GitHub Pages cannot execute this application. The supplied Docker Compose setup is for one owner on Docker Desktop or a private Linux server. A hosting service must support a long-running Python process, WebSockets, child processes, and writable persistent disk.

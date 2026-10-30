@@ -5,6 +5,18 @@ on:
 permissions:
   contents: read
 jobs:
+  vercel-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node --test web/build.test.mjs
+      - run: node --check web/app.js
+      - run: node web/build.mjs
+        env:
+          STUDYSPACE_BACKEND_URL: https://backend.example.com
   tests:
     strategy:
       matrix:
@@ -24,6 +36,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: docker compose config --quiet
+      - name: Validate authenticated gateway configuration
+        run: |
+          export STUDYSPACE_BACKEND_DOMAIN=backend.example.com
+          export STUDYSPACE_FRONTEND_ORIGIN=https://studyspace.vercel.app
+          export STUDYSPACE_LOGIN=ci-fixture
+          export STUDYSPACE_PASSWORD_HASH="$(docker run --rm caddy:2-alpine caddy hash-password --plaintext ci-fixture-only)"
+          docker compose -f compose.yaml -f compose.gateway.yaml config --quiet
+          docker run --rm -e STUDYSPACE_BACKEND_DOMAIN -e STUDYSPACE_FRONTEND_ORIGIN -e STUDYSPACE_LOGIN -e STUDYSPACE_PASSWORD_HASH -v "$PWD/deploy/Caddyfile:/etc/caddy/Caddyfile:ro" caddy:2-alpine caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
       - run: docker compose build
       - name: Smoke test container startup
         run: |

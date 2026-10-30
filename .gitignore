@@ -24,3 +24,6 @@ dist/
 build/
 .coverage
 htmlcov/
+node_modules/
+.vercel/
+web/dist/

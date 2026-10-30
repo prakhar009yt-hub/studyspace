@@ -1,0 +1,13 @@
+{$STUDYSPACE_BACKEND_DOMAIN} {
+    basic_auth {
+        {env.STUDYSPACE_LOGIN} {env.STUDYSPACE_PASSWORD_HASH}
+    }
+    header {
+        Content-Security-Policy "frame-ancestors 'self' {$STUDYSPACE_FRONTEND_ORIGIN}"
+        X-Content-Type-Options nosniff
+        Referrer-Policy no-referrer
+        Cache-Control "private, no-store"
+    }
+    # Native WebSocket upgrades remain on the persistent backend.
+    reverse_proxy studyspace:8501
+}

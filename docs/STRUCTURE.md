@@ -13,6 +13,8 @@
 | `muj_study/cli.py` | Local command-line workflows |
 | `tests/` | Offline unit and Streamlit interaction tests |
 | `deploy/start.py`, `Dockerfile`, `compose.yaml` | Persistent single-user container deployment |
+| `web/` | Dependency-free Vercel website; embeds/opens the full persistent workspace |
+| `compose.gateway.yaml`, `deploy/Caddyfile` | Optional authenticated HTTPS gateway for that workspace |
 | `.github/workflows/ci.yml` | Tests, source secret check and container smoke test |
 | `scripts/check_publish.py` | Check staged/tracked files without displaying secret values |
 | `config.example.json` | Safe defaults; no actual credentials |
