@@ -1,0 +1,28 @@
+services:
+  studyspace:
+    build: .
+    init: true
+    restart: unless-stopped
+    ports:
+      # This is a personal workspace. Keep private; use an SSH tunnel remotely.
+      - "127.0.0.1:8501:8501"
+    volumes:
+      - studyspace-config:/state/config
+      - studyspace-data:/state/data
+      - studyspace-private:/state/private
+    environment:
+      TZ: Asia/Kolkata
+      # Set through the hosting provider or shell; values never enter the image.
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      YOUTUBE_API_KEY: ${YOUTUBE_API_KEY:-}
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    shm_size: 1gb
+    stop_grace_period: 30s
+
+volumes:
+  studyspace-config:
+  studyspace-data:
+  studyspace-private:

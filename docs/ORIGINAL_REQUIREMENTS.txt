@@ -1,0 +1,168 @@
+1. Login and session handling
+One-time manual login. A browser window opens on the LMS login page. You sign in yourself, including any Microsoft/SSO step or OTP, and the tool saves the session afterward. Your password is never typed into or stored by the tool.
+Session check on every run. Before doing anything, it confirms you’re still logged in, for example by loading your home page and checking that it shows your name or courses rather than a login screen.
+Expiry handling. If the session has expired, it stops and tells you plainly: “Session expired, please log in again.” It doesn’t fail halfway through a download.
+Session file protection. The saved session is as sensitive as a password. It should live outside any shared folder or Git repo, and the tool should warn you if it’s inside one.
+Logout/reset option. One command to delete the saved session when you want to start fresh.
+2. Course and content discovery
+Course list. Reads all courses you’re enrolled in and lets you choose which ones to track (maybe you only care about 4 of 6).
+Content tree reading. Walks through each course’s modules and units to find every file: PDFs, PPTs, Word docs, and linked pages.
+File type handling. Decides what to do with each type:
+PDFs: analyze directly.
+PPT/PPTX: analyze or convert to PDF first.
+DOC/DOCX: extract text.
+Videos or external links the professor posted: record them in the list but don’t download them.
+Folder structure mirroring. Saves files locally as Course → Unit/Module → File, so it matches how the LMS organizes things.
+Change detection. Remembers what it saw last time, so it can tell which files are new, which were replaced, and which are unchanged.
+3. Downloading
+Incremental downloads. Only fetches new or changed files.
+Polite pacing. Small delays between requests and a limit on how many files per run, so you don’t hammer the university’s server or get flagged.
+Retry on failure. If a download drops, it retries a couple of times, then logs the failure and moves on rather than crashing.
+Download report. At the end of a run: “5 new files, 2 updated, 1 failed (reason).”
+4. Reading and understanding the notes
+Direct PDF analysis with Gemini. Sends the PDF itself, which handles diagrams, tables, and scanned pages better than plain text extraction.
+Large file handling. Long PDFs (100+ pages) get split into chunks by chapter or page range, analyzed separately, then merged, so the model doesn’t lose detail or hit limits.
+Per-note output includes:
+A short summary (a few lines).
+Main topics, in the order they appear.
+Key concepts and definitions.
+Difficulty tagging: which topics are foundational versus tricky.
+Prerequisites: what you should already know to follow this note.
+Context awareness. You give it the subject name, semester, and your level once. It uses that to judge what’s important and what level of help to recommend.
+Language handling. Works fine with notes that mix English with equations, code, or diagrams.
+5. Video recommendations
+Query generation. For each topic, Gemini writes a good search query. For example, “Dijkstra’s algorithm explained with example” is better than just “graph algorithms”.
+YouTube search. Pulls several candidate videos per topic via the YouTube Data API.
+Filtering before ranking. Removes obvious bad matches:
+Too short (a 1-minute clip) or too long for the topic.
+Very low views or likes relative to views.
+Titles that look like clickbait.
+Videos in languages you didn’t choose.
+Ranking with Gemini. Looks at title, channel, description, and length, and picks the best 2-3 per topic.
+Variety. Aims for a mix: a quick intro, a deeper lecture, and ideally one with solved examples.
+Preferred channels list. You can name channels you trust (or ones you want excluded), and it favors or skips them.
+Reason for each pick. A one-line “why this video” so you can choose quickly.
+Quota awareness. The YouTube API has a daily limit, and search calls use a lot of it. The tool tracks usage and warns you before you run out.
+6. Personalization
+Level setting. B.Tech undergraduate, so recommendations aren’t school-level or research-level.
+Language preference. English, Hindi, or both.
+Syllabus upload. If you provide the syllabus, it matches note topics to syllabus units and flags topics that appear in the syllabus but aren’t covered in the notes (gaps).
+Exam mode. Set an exam date and it sorts topics by priority, with the weakest or least-reviewed ones first.
+Weak-topic flags. You mark topics as “confusing” and it recommends extra videos on those and brings them back later.
+7. Study aids built from the same notes
+Quiz generation. Multiple-choice and short-answer questions per note, with answers and explanations.
+Flashcards. Definitions and key formulas in question/answer form.
+Ask-the-notes chat. Ask questions like “explain slide 12 in simpler words” and get answers grounded in that specific note.
+Cheat sheet. One-page revision summary per unit.
+8. Tracking and memory
+Watched/skipped marking. Videos you’ve seen don’t show up again.
+Progress per course. Shows how many topics you’ve covered, and which are left.
+History of recommendations. Keeps past results so you can look back.
+Caching. If you re-run a note that hasn’t changed, it reuses the earlier analysis and video results. This saves time and API quota.
+9. Automation and notifications
+Scheduled checks. Runs automatically at set times, say every morning, to look for new uploads.
+Digest delivery. Sends you a short message by email or Telegram: “2 new notes in DBMS. Here are the topics and videos.”
+Manual trigger. You can still run it on demand for one course or one file.
+10. Interface
+Version 1: command line. Simple commands: log in, sync, analyze, show recommendations. It’s the fastest to build and fine for testing.
+Version 2: small web app with:
+A course sidebar.
+A note list showing new/analyzed status.
+A note page with summary, topics, and video cards.
+Buttons for “mark watched,” “this topic is hard,” and “generate quiz.”
+Dark mode and mobile-friendly layout if you want to use it from your phone.
+11. Reliability and error handling
+Clear errors for each failure type: expired session, site layout changed, file unreadable, PDF is scanned and blurry, API quota reached, no internet.
+Partial success. One bad file shouldn’t stop the whole run.
+Logging. A simple log file so you can see what happened when something goes wrong.
+Layout-change tolerance. LMS pages can change. The tool should fail with a clear message rather than silently doing the wrong thing, and keep the page-reading logic in one place so it’s easy to fix.
+12. Privacy and safety
+Credentials stay with you. Manual login, session file only, and nothing sent to Gemini except note content.
+Local storage for downloaded files, results, and history.
+API keys in a protected config, never in shared code.
+Respect the university’s rules. Only your own account and your own course material, at a gentle pace. It’s worth checking Manipal’s acceptable-use policy first.
+Copyright awareness. Notes are for your personal study. The tool shouldn’t be set up to share or republish them.
+Suggested build order
+Phase 1: login/session, one course, download files, analyze with Gemini, print topics.
+Phase 2: YouTube search and ranking, plus caching.
+Phase 3: multiple courses, change detection, level and language settings.
+Phase 4: web interface, watched tracking, weak-topic flags.
+Phase 5: quizzes, flashcards, notifications, exam mode.
+
+1. Smarter search
+Multiple queries per topic. Instead of one search, generate 3 or 4 variants with different angles: a beginner explanation, a worked example, a “how it’s asked in exams” angle, and a short revision-style version. Merge and de-duplicate the results. This gives you a much wider pool to pick from.
+Context in the query. Include the subject and level where it helps. “Normalization in DBMS” is far better than “normalization”, which also matches chemistry and statistics videos.
+Language variants. If you chose English and Hindi, run queries in both and keep the two groups labeled.
+Playlist search. Some topics are best learned from a full playlist by a good teacher (a whole unit in order). Search for playlists separately and let the tool recommend “watch this playlist, videos 4-7” for the relevant part.
+Fallback queries. If a query returns weak results (few videos, low views), automatically retry with a broader or reworded version before giving up.
+Query learning. Remember which queries gave videos you actually watched or liked, and reuse that style for future topics.
+2. Better filtering before ranking
+Duration fit. Match length to the topic: a small concept should be roughly 5-20 minutes, a full chapter lecture 30-90. Use the YouTube API’s video details to get exact length.
+Engagement quality. Use the like-to-view ratio and view count together. A video with 2 million views and a poor ratio is often worse than one with 80k views and a high ratio.
+Freshness where it matters. For fast-changing topics (frameworks, tools, cloud services) penalize videos older than 2-3 years. For stable topics (data structures, thermodynamics), age doesn’t matter, and older videos are often better.
+Clickbait and spam detection. Filter titles with patterns like “in 1 minute”, “SECRET trick”, excessive caps or emojis, and videos that are mostly ads.
+Channel quality signals. Subscriber count, channel age, and whether the channel mostly posts educational content.
+Caption availability. Prefer videos that have captions or transcripts. That makes the next features possible.
+Region and accent notes. If you find certain accents or teaching styles easier, let the tool learn that from your ratings.
+3. Transcript-based verification (the biggest upgrade)
+
+Titles can lie. A video titled “Normalization explained” may only cover one normal form.
+
+Pull the transcript of the top candidates (where captions exist).
+Have Gemini compare the transcript against your note’s topic. Does the video actually cover the same concepts, in the same depth, using the same terminology as your professor’s notes?
+Coverage score. For each video, show something like “covers 4 of the 6 subtopics in your notes”, and list the missing ones.
+Matching to note terminology. Some professors use a specific notation or method. A video that uses a different convention could confuse you, so the tool flags it.
+Cost control. Only run this on the top 3-5 candidates per topic, since transcripts are long.
+4. Smarter ranking with Gemini
+Structured scoring. Instead of “pick the best”, ask Gemini to score each video on clear criteria: relevance to the topic, clarity, level match, depth, and examples included. Then combine the scores in your own code, so the ranking is explainable and tunable.
+Role-based picks. Label the results: “Best quick intro”, “Best deep dive”, “Best for exam revision”, “Best with solved problems”.
+Learning-order suggestions. Recommend the order to watch them: intro first, deep dive after.
+Reason per pick. A one-line explanation of why each was chosen.
+Confidence indicator. If the best result is mediocre, say so (“no strong match found”) instead of pretending.
+5. Timestamps and chapters
+Jump-to links. Where the video has chapters or a transcript, link to the exact minute that covers your topic, for example “start at 14:20”.
+Skip suggestions. “Skip the first 6 minutes of intro”, which saves real time on long lectures.
+Section mapping. For a long lecture, map each part to the matching topic in your notes.
+6. Better caching
+Cache search results, keyed by query, since the YouTube API quota is the main limit.
+Cache video details and transcripts separately, since they rarely change.
+Cache Gemini scoring per (video, topic) pair.
+Expiry rules. Search results can go stale in a few weeks; video metadata like title and length rarely changes. Use different lifetimes for each.
+Cache hits shown to you. A small “reused from cache” note, so it’s clear why a run was fast.
+Manual refresh. A way to force a fresh search for one topic when you’re unhappy with the results.
+Cross-note reuse. If two notes cover the same topic (say, “SQL joins” appears in two units), reuse the same recommendations instead of searching twice.
+7. API quota and cost management
+Quota meter. The YouTube search endpoint is expensive against the daily free quota. Track how much you’ve used and show it.
+Budget mode. Set a daily limit, and the tool prioritizes the highest-value topics when it’s running low.
+Batching. Fetch details for many videos in a single call rather than one by one, which saves quota.
+Graceful degradation. If quota runs out, serve cached results and queue the rest for tomorrow instead of failing.
+Gemini usage control. Use the cheaper, faster model for filtering and bulk work, and a stronger one only for final ranking and transcript comparison.
+8. Feedback loop
+
+This is what makes the tool improve over time.
+
+Rate each video: helpful, okay, or bad, with one tap.
+Reason tags: “too fast”, “too basic”, “bad audio”, “wrong topic”, “too long”.
+Use the ratings to adjust future ranking, for example boosting channels you liked and demoting the ones you rejected.
+Hide forever. Permanently block a video or channel.
+Watched tracking. Mark videos as watched so they drop out of suggestions, and optionally note whether you finished them.
+9. Output presentation
+Video cards with thumbnail, title, channel, length, view count, and the “why this video” line.
+Grouped by topic and ordered by the order of your notes.
+Quick-open links and an “add to Watch Later playlist” option, if you want to connect your YouTube account.
+Export options. A study plan as a Markdown file or PDF you can open offline.
+Estimated study time. Total watch time per note or unit, so you can plan your day.
+10. Beyond YouTube (optional)
+Other sources. Add free lecture sources like NPTEL, MIT OpenCourseWare, or university channels. For Indian engineering syllabi, NPTEL is often an excellent match.
+Written resources. GeeksforGeeks, documentation pages, or textbook chapters as alternatives for people who prefer reading.
+Source mix. Offer a video, a written explanation, and a practice resource for each topic.
+11. Testing and monitoring the quality
+A small test set. Pick 10 topics where you already know the best videos, and check whether the tool finds them. Rerun after each change to see if quality improved or dropped.
+Log every decision. Which videos were found, filtered, and why, so when a bad recommendation shows up you can see where it went wrong.
+Spot-check ranking changes. When you tweak the scoring, compare the old and new picks side by side.
+What I’d prioritize within Phase 2
+Multiple queries per topic + filtering (biggest quality jump for the least effort)
+Caching + quota tracking (otherwise you’ll hit limits quickly)
+Structured scoring with a reason per pick
+Feedback ratings
+Transcript verification and timestamps (the most impressive feature, and the most work)

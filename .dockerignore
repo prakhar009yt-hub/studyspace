@@ -1,0 +1,14 @@
+# Only application sources enter the build context. No notes or credentials.
+**
+!pyproject.toml
+!requirements.txt
+!config.example.json
+!dashboard.py
+!README.md
+!muj_study/
+!muj_study/*.py
+!assets/
+!assets/*.css
+!deploy/
+!deploy/*.py
+!Dockerfile
