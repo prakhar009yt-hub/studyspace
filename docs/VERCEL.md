@@ -77,7 +77,7 @@ If you already have an authenticated HTTPS gateway, use it instead of Caddy. It 
 
 1. Push the source repository to GitHub. GitHub authentication is still required if it has not been connected yet.
 2. In Vercel, create/import a project from that repository.
-3. Set **Root Directory** to **`web`**. This is essential: the repository root is the Python/Docker backend.
+3. Set **Root Directory** to **`web`**. This is essential: the repository root is the Python/Docker backend. The repository also includes a root-level `vercel.json` so a direct repo-root import still builds the `web/` frontend correctly if you do not override the root directory in the UI.
 4. Choose **Other** as the Framework Preset, with Node.js **24.x**.
 5. Add **`STUDYSPACE_BACKEND_URL`** = your protected backend root URL, for example `https://study.your-domain.example`.
 6. Build Command: `npm run build`. Output Directory: `dist`. The included `web/vercel.json` declares these.
@@ -87,6 +87,8 @@ If you already have an authenticated HTTPS gateway, use it instead of Caddy. It 
 For CLI users, run the Vercel CLI from `web/`, not the repository root. Set the same public backend environment variable before building. No project linking or paid hosting is performed by this repository automatically.
 
 Only the validated backend root URL is embedded into `config.js`. It is public, not a secret. A missing, non-HTTPS, credential-bearing, localhost or non-root URL fails a production build with an actionable message. Do not put `GEMINI_API_KEY`, `YOUTUBE_API_KEY`, LMS cookies or worker keys into the `web` project. The build never reads or copies those variables. Changing the backend URL requires redeploying the static website.
+
+If the deployment is still blocked by Vercel with the message that the commit author lacks access, that is a GitHub/Vercel permission issue rather than a build issue: the project must be owned by a Vercel team member or be a public repository on the Hobby plan, or the account must be upgraded to a plan that allows the repository's collaboration model.
 
 ### Preview deployments and embedded login
 
