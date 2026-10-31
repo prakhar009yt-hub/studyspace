@@ -1,0 +1,17 @@
+{
+  "name": "Studyspace · MUJ Study Assistant",
+  "short_name": "Studyspace",
+  "description": "Your notes, study aids, and exam plan in one private workspace.",
+  "start_url": "/study.html",
+  "display": "standalone",
+  "background_color": "#0A0A0A",
+  "theme_color": "#007BA7",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
+

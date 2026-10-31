@@ -142,6 +142,16 @@ def render(app):
         ui.heading('SEE HOW FAR YOU’VE COME', 'A little progress, every day.', 'Keep track of what clicks and what deserves a second look.')
         data = progress(app)
         if data['exam_date']: st.info(f'Exam: {data["exam_date"]} · {data["days_to_exam"]} days remaining')
+        if data['courses']:
+            from muj_study.study_export import build_study_export
+            study_data = json.dumps(build_study_export(app), indent=2, ensure_ascii=False)
+            st.download_button(
+                f'Export Semester {app.cfg["semester"]} study JSON (for web/extension) ↓',
+                study_data,
+                f'Studyspace-semester-{app.cfg["semester"]}.json',
+                'application/json',
+                key='download-semester-study-json'
+            )
         if not data['courses']:
             ui.empty('Your progress starts with one note', 'Import your course material, then mark topics as covered as you study.', '◈')
             st.button('Add some notes →', type='primary', on_click=ui.navigate, args=('Import',))

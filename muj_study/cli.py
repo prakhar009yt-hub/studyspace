@@ -33,6 +33,9 @@ def parser():
     b = sub.add_parser('block-channel'); b.add_argument('channel')
     for cmd in ['aids', 'export']:
         s = sub.add_parser(cmd); s.add_argument('note_id')
+    exp_study = sub.add_parser('export-study', help='Export workspace to browser study JSON (studyspace.study.v1)')
+    exp_study.add_argument('--semester', type=int)
+    exp_study.add_argument('--output', type=Path)
     q = sub.add_parser('ask'); q.add_argument('note_id'); q.add_argument('question')
     g = sub.add_parser('gaps'); g.add_argument('course'); g.add_argument('syllabus', type=Path)
     v = sub.add_parser('verify'); v.add_argument('note_id'); v.add_argument('topic'); v.add_argument('video_id'); v.add_argument('transcript', type=Path)
@@ -128,6 +131,9 @@ def execute(app, args):
         return {'local_requests': [dict(r) for r in app.db.execute('SELECT * FROM quota ORDER BY day DESC')], 'queued': app.db.execute('SELECT COUNT(*) FROM pending').fetchone()[0], 'note': 'Local request counts only; Cloud Console is authoritative. Reset: Pacific midnight. Search and metadata budgets are separate.'}
     if command == 'retry-queue': return {'completed': YouTube(app).drain_queue()}
     if command == 'export': return str(export_plan(app, args.note_id))
+    if command == 'export-study':
+        from .study_export import export_study_to_file
+        return str(export_study_to_file(app, semester=args.semester, destination=args.output))
     if command == 'notification-setup':
         keys = json.loads(app.secrets.read_text()) if app.secrets.exists() else {}
         keys['TELEGRAM_BOT_TOKEN'] = getpass.getpass('Telegram bot token (hidden): ').strip()

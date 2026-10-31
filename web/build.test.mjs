@@ -33,7 +33,7 @@ test('build output contains only static files and public backend configuration',
   process.env.GEMINI_API_KEY = 'fixture-do-not-publish';
   try {
     await build('https://study.example.com', { output });
-    assert.deepEqual((await readdir(output)).sort(), ['app.js', 'companion.html', 'config.js', 'demo.mjs', 'downloads', 'favicon.svg', 'index.html', 'onboarding.mjs', 'privacy.html', 'site.css', 'study-core.mjs', 'study.html', 'study.mjs', 'styles.css', 'theme.mjs', 'workspace.css']);
+    assert.deepEqual((await readdir(output)).sort(), ['app.js', 'companion.html', 'config.js', 'demo.mjs', 'downloads', 'favicon.svg', 'index.html', 'manifest.webmanifest', 'onboarding.mjs', 'privacy.html', 'site.css', 'study-core.mjs', 'study.html', 'study.mjs', 'styles.css', 'sw.js', 'theme.mjs', 'workspace.css']);
     const config = await readFile(join(output, 'config.js'), 'utf8');
     assert.match(config, /https:\/\/study\.example\.com\//);
     assert.ok(!config.includes('fixture-do-not-publish'));

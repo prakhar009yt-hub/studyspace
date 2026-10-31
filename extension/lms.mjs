@@ -16,12 +16,30 @@ export async function limitedBytes(response, maximum=MAX_FILE) {
   return result;
 }
 export class LMS {
-  constructor(request=fetch) { this.request=request; }
-  async response(path) {
-    const response=await this.request(lmsURL(path),{credentials:'include',redirect:'error',signal:AbortSignal.timeout(90000)});
-    if ([401,403].includes(response.status)) throw new Error(`MUJ HTTP ${response.status}: sign into MUJ in this browser. If this persists, MUJ may require an approved API application; this extension cannot bypass that restriction.`);
-    if (!response.ok) throw new Error(`MUJ HTTP ${response.status}. Retry later.`);
-    return response;
+  constructor(request=fetch) { this.request=request; this.lastRequest=0; }
+  async waitThrottle() {
+    const minGap=200;
+    const now=Date.now();
+    const waitTime=Math.max(0,this.lastRequest+minGap-now);
+    if(waitTime>0)await new Promise(r=>setTimeout(r,waitTime));
+    this.lastRequest=Date.now();
+  }
+  async response(path,retries=2) {
+    let delay=1500;
+    for(let attempt=0;attempt<=retries;attempt++){
+      await this.waitThrottle();
+      const response=await this.request(lmsURL(path),{credentials:'include',redirect:'error',signal:AbortSignal.timeout(90000)});
+      if([401,403].includes(response.status)) throw new Error(`MUJ HTTP ${response.status}: sign into MUJ in this browser. If this persists, MUJ may require an approved API application; this extension cannot bypass that restriction.`);
+      if([429,503].includes(response.status)&&attempt<retries){
+        const retryAfter=Number(response.headers?.get?.('retry-after'));
+        const waitMs=(retryAfter>0?retryAfter*1000:delay)+Math.random()*400;
+        delay*=2;
+        await new Promise(r=>setTimeout(r,waitMs));
+        continue;
+      }
+      if(!response.ok) throw new Error(`MUJ HTTP ${response.status}. Retry later.`);
+      return response;
+    }
   }
   async json(path) {
     const response=await this.response(path);

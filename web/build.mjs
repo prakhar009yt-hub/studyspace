@@ -24,7 +24,7 @@ export async function build(value, { output = resolve(root, 'dist'), allowLocal 
   if (!['local', 'remote'].includes(mode)) throw new Error('STUDYSPACE_MODE must be local or remote.');
   const backend = mode === 'local' ? 'http://127.0.0.1:8765/' : validateBackend(value, allowLocal);
   await mkdir(output, { recursive: true });
-  for (const file of ['index.html', 'companion.html', 'styles.css', 'app.js', 'favicon.svg', 'workspace.css', 'theme.mjs', 'study.html', 'study.mjs', 'study-core.mjs', 'privacy.html', 'site.css', 'onboarding.mjs', 'demo.mjs']) {
+  for (const file of ['index.html', 'companion.html', 'styles.css', 'app.js', 'favicon.svg', 'workspace.css', 'theme.mjs', 'study.html', 'study.mjs', 'study-core.mjs', 'privacy.html', 'site.css', 'onboarding.mjs', 'demo.mjs', 'sw.js', 'manifest.webmanifest']) {
     await copyFile(resolve(root, file), resolve(output, file));
   }
   await mkdir(resolve(output, 'downloads'), { recursive: true });
