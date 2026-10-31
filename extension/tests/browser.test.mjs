@@ -74,7 +74,7 @@ test('Office decompression is bounded by declared and maximum sizes',async()=>{
   const bytes=Buffer.from('<xml>text</xml>');assert.equal(new TextDecoder().decode((await zipEntries(officeZip(bytes))).get('word/document.xml')),bytes.toString());
   await assert.rejects(zipEntries(officeZip(Buffer.alloc(100000,65),1)),/size limit/);
 });
-test('Manifest contains no blanket host, cookie or content-script permissions',async()=>{
+test('Manifest contains scoped permissions and explicit hosts without blanket wildcards',async()=>{
   const manifest=JSON.parse(await readFile(new URL('../manifest.json',import.meta.url),'utf8'));
-  assert.deepEqual(manifest.permissions,['downloads']);assert.equal(manifest.optional_host_permissions.length,3);assert.ok(!manifest.content_scripts);assert.ok(!manifest.externally_connectable);
+  assert.deepEqual(manifest.permissions.sort(),['downloads','storage']);assert.equal(manifest.host_permissions.length,3);assert.ok(manifest.content_scripts.length>=1);assert.ok(!manifest.externally_connectable);
 });

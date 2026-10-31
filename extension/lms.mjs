@@ -28,8 +28,11 @@ export class LMS {
     let delay=1500;
     for(let attempt=0;attempt<=retries;attempt++){
       await this.waitThrottle();
-      const response=await this.request(lmsURL(path),{credentials:'include',redirect:'error',signal:AbortSignal.timeout(90000)});
-      if([401,403].includes(response.status)) throw new Error(`MUJ HTTP ${response.status}: sign into MUJ in this browser. If this persists, MUJ may require an approved API application; this extension cannot bypass that restriction.`);
+      const response=await this.request(lmsURL(path),{credentials:'include',redirect:'follow',signal:AbortSignal.timeout(90000)});
+      if(response.url && (response.url.includes('/d2l/login') || response.url.includes('/login.d2l'))) {
+        throw new Error('MUJ session expired or redirected to sign-in. Please sign into MUJ in another tab and refresh.');
+      }
+      if([401,403].includes(response.status)) throw new Error(`MUJ HTTP ${response.status}: sign into MUJ in this browser profile and refresh.`);
       if([429,503].includes(response.status)&&attempt<retries){
         const retryAfter=Number(response.headers?.get?.('retry-after'));
         const waitMs=(retryAfter>0?retryAfter*1000:delay)+Math.random()*400;

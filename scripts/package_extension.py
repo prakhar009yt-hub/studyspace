@@ -3,7 +3,7 @@ from pathlib import Path
 import zipfile
 
 ROOT = Path(__file__).resolve().parent.parent
-FILES = ['manifest.json', 'background.mjs', 'app.html', 'app.mjs', 'core.mjs', 'lms.mjs', 'google.mjs', 'media.mjs', 'workspace.css', 'privacy.html', 'READ-ME-FIRST.txt']
+FILES = ['manifest.json', 'background.mjs', 'app.html', 'app.mjs', 'core.mjs', 'lms.mjs', 'google.mjs', 'media.mjs', 'workspace.css', 'privacy.html', 'READ-ME-FIRST.txt', 'lms-bridge.js', 'web-bridge.js']
 
 
 def package():

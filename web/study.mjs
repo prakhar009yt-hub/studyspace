@@ -1,9 +1,30 @@
 import { normalizeStudy, exportStudy, topicKey, makePlan } from './study-core.mjs';
 import { demoStudy } from './demo.mjs';
-const $=id=>document.getElementById(id);let study,dirty=false,currentFileHandle=null;
+const $=id=>document.getElementById(id);let study,dirty=false,currentFileHandle=null,extensionConnected=false;
 function element(tag,text,className){const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(className)el.className=className;return el;}
-function change(){dirty=true;$('status').textContent='Unsaved changes. Save to rewrite/update your study file.';}
+function change(){dirty=true;$('status').textContent='Unsaved changes. Save to rewrite/update your study file.';if(study)window.postMessage({type:'STUDYSPACE_SAVE_DATA',payload:study},'*');}
 function details(title,content){const el=element('details');el.append(element('summary',title));for(const c of content)el.append(c);return el;}
+function onExtensionConnected(){
+  if(extensionConnected)return;extensionConnected=true;
+  const pill=$('ext-status-pill');if(pill)pill.style.display='inline-flex';
+  window.postMessage({type:'STUDYSPACE_GET_DATA'},'*');
+}
+function checkExtension(){if(document.documentElement.dataset.studyspaceExtension==='true'||window.__STUDYSPACE_EXTENSION_ACTIVE__||window.__STUDYSPACE_EXTENSION_READY__)onExtensionConnected();}
+window.addEventListener('message',event=>{
+  if(event.source!==window||!event.data)return;
+  if(event.data.type==='STUDYSPACE_EXTENSION_READY'||event.data.type==='STUDYSPACE_PONG'){onExtensionConnected();}
+  else if(event.data.type==='STUDYSPACE_DATA_RESPONSE'){
+    const payload=event.data.payload;
+    if(payload?.studyspace_study?.notes?.length&&!study){
+      loadStudy(payload.studyspace_study,'MUJ LMS (Synced via Extension)');
+      $('status').textContent='✓ Connected to extension · Automatically launched your study workspace!';
+    }else if(payload?.muj_logged_in){
+      const pill=$('ext-status-pill');if(pill)pill.textContent='✓ LMS Logged In';
+    }
+  }
+});
+window.addEventListener('load',()=>{checkExtension();setTimeout(checkExtension,300);setTimeout(checkExtension,1000);});
+checkExtension();
 function loadStudy(input,name,handle=null){
     const next=normalizeStudy(input);study=next;dirty=false;currentFileHandle=handle;
     $('workspace').hidden=false;$('empty').hidden=true;$('save').disabled=false;

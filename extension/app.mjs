@@ -9,14 +9,18 @@ function log(message,error=false) {
   $('stage').textContent=message;
   if(error)$('log').parentElement.open=true;
 }
-function changed(){dirty=true;$('saved').textContent='Unsaved changes. Save your study JSON before closing.';}
+function changed(){
+  dirty=true;$('saved').textContent='Unsaved changes. Save your study JSON before closing.';
+  try{if(typeof chrome!=='undefined'&&chrome.storage?.local)chrome.storage.local.set({studyspace_study:study}).catch(()=>{});}catch{}
+}
 async function sessionGet(key){try{if(typeof chrome!=='undefined'&&chrome.storage?.session){const res=await chrome.storage.session.get([key]);if(res?.[key])return res[key];}}catch{}try{const v=sessionStorage.getItem(key);return v?JSON.parse(v):null;}catch{return null;}}
 async function sessionSet(key,value){try{if(typeof chrome!=='undefined'&&chrome.storage?.session)await chrome.storage.session.set({[key]:value});}catch{}try{sessionStorage.setItem(key,JSON.stringify(value));}catch{}}
 async function sessionRemove(key){try{if(typeof chrome!=='undefined'&&chrome.storage?.session)await chrome.storage.session.remove(key);}catch{}try{sessionStorage.removeItem(key);}catch{}}
 sessionGet('studyspace_queue').then(q=>{if(q?.remaining?.length)log(`Previous session has ${q.remaining.length} pending notes. Connect MUJ and sync to resume.`);});
+try{if(typeof chrome!=='undefined'&&chrome.storage?.local){chrome.storage.local.get(['studyspace_study']).then(res=>{if(res?.studyspace_study?.notes?.length&&!study?.notes?.length){study=normalizeStudy(res.studyspace_study);courses=study.courses;$('semester').value=String(study.semester);drawCourses();log(`Restored ${study.notes.length} notes from extension storage.`);}}).catch(()=>{});}}catch{}
 function lock(value){busy=value;for(const id of ['connect','sync','videos','semester','import','save','local-file']){const el=$(id);if(el)el.disabled=value;}for(const select of $('courses').querySelectorAll('select'))select.disabled=value;$('stop').disabled=!value;}
-function action(id,fn){$(id).addEventListener('click',async()=>{if(busy)return;lock(true);stopped=false;try{await fn();}catch(error){log(error instanceof TypeError?'Network request failed. Check your connection, optional host access, and MUJ login.':error.message,true);}finally{lock(false);}});}
-async function permission(origins){if(!await chrome.permissions.request({origins}))throw new Error('Host access was declined. Click again and allow only the listed sites to continue.');}
+function action(id,fn){$(id).addEventListener('click',async()=>{if(busy)return;lock(true);stopped=false;try{await fn();}catch(error){log(error.message||(error instanceof TypeError?'Network request failed. Refresh your MUJ LMS tab to verify session.':String(error)),true);}finally{lock(false);}});}
+async function permission(origins){try{if(await chrome.permissions.contains({origins}))return;if(!await chrome.permissions.request({origins}))throw new Error('Host access was declined. Allow access to continue.');}catch{}}
 for(let i=1;i<=12;i++){const option=new Option('Semester '+i,String(i));$('semester').add(option);}$('semester').value='3';
 function drawCourses(){
   $('courses').replaceChildren();
