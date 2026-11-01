@@ -52,16 +52,7 @@ $('menu-btn')?.addEventListener('click', () => {
   $('st-sidebar')?.classList.toggle('open');
 });
 
-// Theme toggle
-function updateThemeText() {
-  const isLight = document.body.classList.contains('light');
-  if ($('theme-mode-text')) $('theme-mode-text').textContent = isLight ? 'Light mode' : 'Dark mode';
-  if ($('theme-icon')) $('theme-icon').textContent = isLight ? '☾' : '☀';
-}
-$('theme')?.addEventListener('click', () => {
-  setTimeout(updateThemeText, 50);
-});
-updateThemeText();
+
 
 // Semester dropdown in LMS tab
 if ($('semester')) {

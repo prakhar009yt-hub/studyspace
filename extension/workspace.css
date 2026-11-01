@@ -109,3 +109,49 @@ header{padding:20px clamp(16px,5vw,70px);display:flex;justify-content:space-betw
   .st-menu-btn { display: inline-flex; }
   .home-two-col { grid-template-columns: 1fr; }
 }
+
+/* Light mode adaptations for Streamlit dashboard */
+body.light .st-sidebar {
+  background: rgba(255, 255, 255, 0.92);
+  border-right: 1px solid rgba(20, 35, 55, 0.1);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.04);
+}
+body.light .st-theme-btn {
+  background: linear-gradient(115deg, rgba(0,123,167,0.1), rgba(255,45,149,0.04)), #ffffff;
+  border-color: rgba(20, 35, 55, 0.16);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+}
+body.light .st-theme-btn:hover {
+  border-color: var(--blue);
+  box-shadow: 0 4px 16px rgba(0,123,167,0.15);
+}
+body.light .st-theme-btn .st-theme-icon {
+  background: rgba(0,123,167,0.12);
+  color: #007ba7;
+}
+body.light .st-topbar {
+  background: rgba(255, 255, 255, 0.88);
+  border-bottom: 1px solid rgba(20, 35, 55, 0.1);
+}
+body.light .home-hero {
+  background: linear-gradient(135deg, rgba(0,123,167,0.1), rgba(255,45,149,0.04)), #ffffff;
+}
+body.light .st-nav-item:hover {
+  background: rgba(0, 123, 167, 0.06);
+}
+body.light .st-nav-item.active {
+  background: linear-gradient(130deg, rgba(0,123,167,0.14), rgba(255,45,149,0.04)), #ffffff;
+  color: #007ba7;
+  border-color: #007ba7;
+  box-shadow: 0 3px 12px rgba(0, 123, 167, 0.12);
+}
+body.light .st-sidebar-note {
+  background: rgba(0, 123, 167, 0.04);
+  border-color: rgba(0, 123, 167, 0.15);
+}
+body.light .st-sidebar-brand .brand-title {
+  color: #142337;
+}
+body.light .st-theme-btn .st-theme-text strong {
+  color: #142337;
+}

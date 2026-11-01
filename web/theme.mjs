@@ -1,27 +1,51 @@
-const button=document.getElementById('theme');
-function getThemeIcon(light){
-  if(light){
-    return `
-      <svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 3.5v2.2M12 18.3v2.2M5.5 12h-2.2M20.7 12h-2.2M6.7 6.7l-1.5-1.5M18.8 18.8l-1.5-1.5M17.3 6.7l1.5-1.5M5.2 18.8l1.5-1.5"/>
-        <circle cx="12" cy="12" r="4.2"/>
-      </svg>
-    `;
+const button = document.getElementById('theme');
+
+function getThemeIcon(light) {
+  if (light) {
+    return `<svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true" style="width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block">
+      <path d="M12 3v2.5M12 18.5V21M4.2 4.2l1.8 1.8M18 18l1.8 1.8M3 12h2.5M18.5 12H21M4.2 19.8l1.8-1.8M18 6l1.8-1.8"/>
+      <circle cx="12" cy="12" r="4"/>
+    </svg>`;
   }
-  return `
-    <svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M19 14.4A7.4 7.4 0 0 1 9.6 5a7.4 7.4 0 1 0 9.4 9.4Z"/>
-    </svg>
-  `;
+  return `<svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true" style="width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+  </svg>`;
 }
-function update(){
-  if(!button)return;
-  const light=document.body.classList.contains('light');
-  button.innerHTML=getThemeIcon(light);
-  button.setAttribute('aria-label',light?'Switch to dark mode':'Switch to light mode');
+
+function update() {
+  if (!button) return;
+  const light = document.body.classList.contains('light');
+
+  const iconSpan = document.getElementById('theme-icon');
+  const modeText = document.getElementById('theme-mode-text');
+
+  if (iconSpan && modeText) {
+    iconSpan.innerHTML = getThemeIcon(light);
+    modeText.textContent = light ? 'Light mode' : 'Dark mode';
+    button.setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode');
+    return;
+  }
+
+  button.innerHTML = getThemeIcon(light);
+  button.setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode');
 }
-try{document.body.classList.toggle('light',localStorage.getItem('studyspace-web-theme')==='light');}catch{/* optional */}update();
-button?.addEventListener('click',()=>{const light=document.body.classList.toggle('light');update();try{localStorage.setItem('studyspace-web-theme',light?'light':'dark');}catch{/* optional */}});
-if('serviceWorker' in navigator && location.protocol.startsWith('http')){
-  window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});
+
+try {
+  const saved = localStorage.getItem('studyspace-web-theme');
+  document.body.classList.toggle('light', saved === 'light');
+} catch {}
+update();
+
+button?.addEventListener('click', () => {
+  const light = document.body.classList.toggle('light');
+  update();
+  try {
+    localStorage.setItem('studyspace-web-theme', light ? 'light' : 'dark');
+  } catch {}
+});
+
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
 }
