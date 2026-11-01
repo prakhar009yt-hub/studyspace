@@ -36,7 +36,7 @@
     text.innerHTML = '<span style="color:#35bee0">✦</span> Studyspace Active';
 
     const link = document.createElement('a');
-    link.href = 'https://studyspace-amber-seven.vercel.app/study.html';
+    link.href = (typeof chrome !== 'undefined' && chrome.runtime?.getURL) ? chrome.runtime.getURL('app.html') : 'https://studyspace-amber-seven.vercel.app/study.html';
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
     link.textContent = 'Open Study Workspace ↗';
@@ -60,4 +60,3 @@
     reportStatus();
   }
 })();
-
