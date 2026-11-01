@@ -1,5 +1,374 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Studyspace · Study file</title><link rel="icon" href="favicon.svg"><link rel="manifest" href="manifest.webmanifest"><link rel="stylesheet" href="workspace.css"><link rel="stylesheet" href="site.css"><script type="module" src="theme.mjs"></script><script type="module" src="study.mjs"></script></head>
-<body class="site"><a class="skip" href="#main">Skip to content</a><header class="site-header viewer-header"><a class="brand" href="/" aria-label="Studyspace home"><span class="brand-mark">s.</span><span>studyspace<span class="brand-dot">✦</span></span></a><nav aria-label="Workspace navigation"><a href="/#setup">Extension setup ↗</a><a href="privacy.html">Privacy</a></nav><button id="theme" class="theme-button" aria-label="Change theme">☀</button></header>
-<main id="main" class="viewer-main"><div class="viewer-title"><div class="eyebrow">YOUR KNOWLEDGE, CONNECTED</div><h1>Everything<br><em>you’re learning.</em></h1><p class="muted">Pick up where your saved file left off. A clearer path through your semester.</p></div><div class="row viewer-toolbar"><label class="button primary">Open study JSON <input class="file" id="open" type="file" accept=".json,application/json"></label><button id="save" disabled>Save changes ↓</button><span id="ext-status-pill" class="badge" style="display:none;background:#2ecc7125;color:#2ecc71;border:1px solid #2ecc71;">✓ Extension connected</span><span class="tiny-muted">Windows & Mac · Files stay in this tab</span></div><p id="status" class="muted" role="status" aria-live="polite">Choose the JSON saved by the extension. This page never uploads your file.</p>
-<div id="workspace" hidden><section class="panel"><div id="stats" class="stats"></div><div class="grid"><label>Subject <select id="course"></select></label><label>Search notes & topics · ⌘ / Ctrl K <input id="search" type="search" placeholder="Find your next breakthrough…"></label></div></section><section class="panel"><div class="eyebrow">SMALL STEPS. EXAM-DAY CONFIDENCE.</div><h2>A plan that meets you where you are.</h2><p class="muted">Mark the topics that need practice. We’ll put those first and leave time for revision.</p><div class="row"><label>Exam date <input id="exam" type="date" required></label><label>Minutes per day <input id="minutes" type="number" min="15" max="720" value="120"></label><button id="plan">Make my plan</button></div><div id="schedule"></div></section><div id="notes"></div></div>
-<section id="empty" class="panel empty drop-zone" aria-label="Drop your study JSON here"><div class="drop-symbol" aria-hidden="true">▤</div><h2>A fresh page, full of possibilities.</h2><p>Drop your study JSON here, or choose <strong>Open study JSON</strong> above.<br>Your summaries, practice and plan will be right here.</p><div class="row"><button id="demo">Explore an example workspace ↗</button><a class="button quiet" href="/#setup">Get the extension →</a></div><p class="tiny-muted">New here? The example uses synthetic notes and needs no API key.</p></section><footer>Changes stay in this tab until you save a new JSON file. Keep a backup of your latest file.</footer></main></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Studyspace · MUJ Study Companion</title>
+  <link rel="icon" href="favicon.svg">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="workspace.css">
+  <script type="module" src="theme.mjs"></script>
+  <script type="module" src="study.mjs"></script>
+</head>
+<body>
+  <div class="st-layout">
+    <!-- SIDEBAR -->
+    <aside id="st-sidebar" class="st-sidebar" aria-label="Workspace navigation">
+      <a class="st-sidebar-brand" href="/">
+        <span class="brand-icon">s.</span>
+        <div>
+          <div class="brand-title">studyspace<span class="brand-spark">✦</span></div>
+          <div class="brand-sub">Your MUJ companion</div>
+        </div>
+      </a>
+
+      <button id="theme" class="st-theme-btn" aria-label="Switch theme">
+        <span class="st-theme-icon" id="theme-icon">☀</span>
+        <div class="st-theme-text">
+          <small>Appearance</small>
+          <strong id="theme-mode-text">Dark mode</strong>
+        </div>
+      </button>
+
+      <div class="st-nav-label">EXPLORE YOUR WORKSPACE</div>
+
+      <nav class="st-nav" role="radiogroup" aria-label="Workspace pages">
+        <button class="st-nav-item active" data-page="Home">
+          <svg class="st-nav-icon" viewBox="0 0 24 24"><path d="M3 10 12 3l9 7M5 9v12h5v-7h4v7h5V9"/></svg>
+          <span>Home</span>
+        </button>
+        <button class="st-nav-item" data-page="LMS">
+          <svg class="st-nav-icon" viewBox="0 0 24 24"><path d="m3 8 9-5 9 5-9 5-9-5Zm4 3v6l5 3 5-3v-6M21 8v8"/></svg>
+          <span>LMS</span>
+        </button>
+        <button class="st-nav-item" data-page="Notes">
+          <svg class="st-nav-icon" viewBox="0 0 24 24"><path d="M5 3h14v18H5zM8 7h8M8 11h8M8 15h5"/></svg>
+          <span>Notes</span>
+        </button>
+        <button class="st-nav-item" data-page="Topics">
+          <svg class="st-nav-icon" viewBox="0 0 24 24"><path d="M12 4v5m-7 7v-4h14v4M12 12v4M9 3h6v4H9zM2 16h6v5H2zM9 16h6v5H9zM16 16h6v5h-6z"/></svg>
+          <span>Topics</span>
+        </button>
+        <button class="st-nav-item" data-page="Videos">
+          <svg class="st-nav-icon" viewBox="0 0 24 24"><path d="M4 5h16v14H4zM10 9l5 3-5 3z"/></svg>
+          <span>Videos</span>
+        </button>
+        <button class="st-nav-item" data-page="Planner">
+          <svg class="st-nav-icon" viewBox="0 0 24 24"><path d="M4 5h16v16H4zM8 3v4M16 3v4M4 10h16m-12 5 3 3 5-5"/></svg>
+          <span>Planner</span>
+        </button>
+        <button class="st-nav-item" data-page="Import">
+          <svg class="st-nav-icon" viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M4 14v7h16v-7"/></svg>
+          <span>Import</span>
+        </button>
+        <button class="st-nav-item" data-page="Progress">
+          <svg class="st-nav-icon" viewBox="0 0 24 24"><path d="M4 3v18h17M8 16v-5m5 5V7m5 9V4"/></svg>
+          <span>Progress</span>
+        </button>
+        <button class="st-nav-item" data-page="Settings">
+          <svg class="st-nav-icon" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16M8 4v6m8 4v6"/></svg>
+          <span>Settings</span>
+        </button>
+      </nav>
+
+      <hr class="st-sidebar-divider">
+
+      <div class="st-sidebar-section">
+        <label for="sidebar-course-select">Semester <span id="sidebar-sem-num">3</span> subjects</label>
+        <select id="sidebar-course-select" aria-label="Filter subjects">
+          <option value="">All courses</option>
+        </select>
+      </div>
+
+      <div class="st-sidebar-footer">
+        <div class="st-sidebar-note">
+          <div class="star" aria-hidden="true">✧</div>
+          <strong>Find your flow.</strong>
+          <p>A little focus today. A little more clarity tomorrow.</p>
+        </div>
+        <div class="st-privacy-tag">
+          <span class="dot"></span> Your private study workspace
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN APP -->
+    <main class="st-main">
+      <header class="st-topbar">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button id="menu-btn" class="st-menu-btn" aria-label="Toggle navigation">☰</button>
+          <div class="st-breadcrumb">
+            Workspace <span style="padding:0 8px;color:var(--muted)">/</span> <strong id="topbar-page-name">Home</strong>
+          </div>
+        </div>
+        <div class="st-topbar-actions">
+          <span id="ext-status-pill" class="badge" style="display:none;background:#2ecc7125;color:#2ecc71;border:1px solid #2ecc71;">✓ Extension connected</span>
+          <div class="st-semester-pill" id="semester-pill" title="Current semester">
+            <span class="avatar">MUJ</span>
+            <span id="topbar-semester-label">Semester 3</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="st-content">
+        <!-- 1. HOME -->
+        <section id="page-Home" class="st-page active">
+          <div class="home-hero">
+            <div class="eyebrow">A LITTLE FOCUS GOES A LONG WAY</div>
+            <h1>Less overwhelm.<br>More understanding.</h1>
+            <p>Turn your course notes into clear concepts, great explanations, and a plan that works for you.</p>
+            <div class="hero-tag">✦ &nbsp; Made for the way you learn</div>
+          </div>
+
+          <div class="home-stat-grid">
+            <div class="home-stat-card" data-goto="Notes">
+              <div class="stat-top">Notes in your library <span class="stat-icon">▤</span></div>
+              <div id="stat-notes" class="stat-value">00</div>
+              <div id="stat-notes-foot" class="stat-foot">Semester 3 · 0 subjects</div>
+            </div>
+            <div class="home-stat-card" data-goto="Topics">
+              <div class="stat-top">Topics discovered <span class="stat-icon blue">◈</span></div>
+              <div id="stat-topics" class="stat-value">00</div>
+              <div class="stat-foot">A clearer picture of your syllabus</div>
+            </div>
+            <div class="home-stat-card" data-goto="Topics">
+              <div class="stat-top">Topics covered <span class="stat-icon mint">✓</span></div>
+              <div id="stat-covered" class="stat-value">00</div>
+              <div class="stat-foot">Every small win counts</div>
+            </div>
+            <div class="home-stat-card" data-goto="Videos">
+              <div class="stat-top">Videos watched <span class="stat-icon peach">▷</span></div>
+              <div id="stat-videos" class="stat-value">00</div>
+              <div class="stat-foot">Learning at your own pace</div>
+            </div>
+          </div>
+
+          <div class="home-two-col">
+            <div class="home-main-col">
+              <div class="home-section-head">
+                <h2>Pick up where you left off</h2>
+                <span>YOUR LIBRARY</span>
+              </div>
+              <div id="home-notes-list"></div>
+              <div class="row" style="margin-top:20px;">
+                <button class="button" data-goto="LMS">↻ Fetch from LMS</button>
+                <button class="button" data-goto="Progress">View your progress ↗</button>
+                <button class="button primary" data-goto="Planner">Plan for an exam →</button>
+              </div>
+            </div>
+
+            <div class="home-rail-col">
+              <div class="steps-card">
+                <div class="eyebrow">YOUR STUDY ROUTINE</div>
+                <h3>A little structure helps.</h3>
+                <div class="step"><span class="step-number">1</span><div><strong>Bring your notes</strong><p>Upload a PDF, presentation, or document.</p></div></div>
+                <div class="step"><span class="step-number">2</span><div><strong>Connect the dots</strong><p>Explore concepts and find a teacher who clicks.</p></div></div>
+                <div class="step"><span class="step-number">3</span><div><strong>Make it stick</strong><p>Practice with quizzes and quick flashcards.</p></div></div>
+              </div>
+
+              <div class="focus-card">
+                <div class="eyebrow">✦ YOUR FOCUS CORNER</div>
+                <h3 id="focus-title">Make space for curiosity</h3>
+                <p id="focus-detail">Mark tricky topics to practice and come back to them with fresh explanations.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. LMS -->
+        <section id="page-LMS" class="st-page">
+          <div class="eyebrow">DIRECT BRIGHTSPACE SYNC</div>
+          <h1>Bring your semester<br><em>into focus.</em></h1>
+          <p class="muted">No Python, localhost server or shared database. Keep this tab open while syncing. Save your study file before closing.</p>
+
+          <section class="panel">
+            <h2>1. Connect your subjects</h2>
+            <div class="row">
+              <a class="button" href="https://mujlms.manipal.edu/d2l/login" target="_blank" rel="noopener noreferrer">Sign into MUJ ↗</a>
+              <button id="connect" class="primary">Find my subjects</button>
+              <label>Semester <select id="semester"></select></label>
+            </div>
+            <p class="muted">Use the same Chrome or Edge profile as your MUJ login. Labs are excluded. Unknown semesters need your assignment; we never guess from a course code.</p>
+            <div id="courses"></div>
+          </section>
+
+          <section class="panel">
+            <h2>2. Analyze with your own keys</h2>
+            <div class="grid">
+              <label>Gemini API key <input id="gemini" type="password" autocomplete="off" spellcheck="false" placeholder="Kept in this tab only"></label>
+              <label>Model ID <input id="model" value="gemini-3.1-flash-lite" spellcheck="false"></label>
+              <label>YouTube Data API v3 key · optional <input id="youtube" type="password" autocomplete="off" spellcheck="false" placeholder="For topic video recommendations"></label>
+            </div>
+            <p class="muted">Keys are never saved in the study file. API usage follows your Google quota and billing. Choose a model available to your key.</p>
+            <label class="check"><input id="consent" type="checkbox"> I agree to send the selected notes to Google Gemini for analysis.</label>
+            <label class="check"><input id="originals" type="checkbox"> Also save original documents in my Downloads folder.</label>
+            <div class="row">
+              <button id="sync" class="primary">Fetch &amp; analyze semester</button>
+              <label class="button">Analyze local note <input id="local-file" class="file" type="file" accept=".pdf,.pptx,.docx,.txt,.md"></label>
+              <button id="videos">Find topic videos</button>
+              <button id="stop" disabled>Stop after current tasks</button>
+            </div>
+            <p class="muted">PDF, PPTX, DOCX, TXT and MD up to 50 MB per file. Export older DOC/PPT or complex Office diagrams to PDF. Video ranking uses metadata, not playback.</p>
+          </section>
+
+          <section class="panel" aria-label="Sync progress">
+            <div class="row"><h2>Live progress</h2><span id="counts">Ready</span></div>
+            <progress id="progress" max="1" value="0"></progress>
+            <p id="stage" role="status" aria-live="polite">Connect MUJ to begin.</p>
+            <p id="eta" class="muted">Estimates appear after the first completed files.</p>
+            <details><summary>Activity &amp; errors</summary><ol id="log" class="log"></ol></details>
+          </section>
+        </section>
+
+        <!-- 3. NOTES -->
+        <section id="page-Notes" class="st-page">
+          <div class="eyebrow">YOUR KNOWLEDGE, CONNECTED</div>
+          <h1>Everything<br><em>you’re learning.</em></h1>
+          <p class="muted">Explore summarized topics, definitions, practice questions, and flashcards from your notes.</p>
+
+          <section class="panel">
+            <div id="stats" class="stats">No study notes loaded yet.</div>
+            <div class="grid">
+              <label>Filter by subject <select id="course"><option value="">All subjects</option></select></label>
+              <label>Search notes &amp; topics · ⌘ / Ctrl K <input id="search" type="search" placeholder="Find concepts, definitions, formulas…"></label>
+            </div>
+          </section>
+
+          <div id="notes"></div>
+
+          <section id="empty" class="panel empty" aria-label="No notes loaded">
+            <h2>A fresh page, full of possibilities.</h2>
+            <p>Sync your notes from the <strong>LMS</strong> tab, or open an existing study file in the <strong>Import</strong> tab.</p>
+            <div class="row" style="justify-content:center;margin-top:16px;">
+              <button id="demo">Explore an example workspace ↗</button>
+            </div>
+          </section>
+        </section>
+
+        <!-- 4. TOPICS -->
+        <section id="page-Topics" class="st-page">
+          <div class="eyebrow">YOUR CONCEPT MAP</div>
+          <h1>One topic<br><em>at a time.</em></h1>
+          <p class="muted">Explore discovered concepts, revisit tricky topics, or see what you’ve already covered.</p>
+
+          <section class="panel">
+            <div class="grid">
+              <label>Topic view
+                <select id="topic-filter-view">
+                  <option value="all">All topics</option>
+                  <option value="covered">Covered topics</option>
+                  <option value="review">Needs review</option>
+                </select>
+              </label>
+              <label>Find a topic
+                <input id="topic-search-input" type="search" placeholder="Search concepts or subjects…">
+              </label>
+            </div>
+          </section>
+
+          <div id="topics-list-container"></div>
+        </section>
+
+        <!-- 5. VIDEOS -->
+        <section id="page-Videos" class="st-page">
+          <div class="eyebrow">LEARN IT YOUR WAY</div>
+          <h1>Topic videos<br><em>that click.</em></h1>
+          <p class="muted">AI-recommended YouTube explanations tailored for your syllabus concepts.</p>
+
+          <div id="videos-grid-container"></div>
+        </section>
+
+        <!-- 6. PLANNER -->
+        <section id="page-Planner" class="st-page">
+          <div class="eyebrow">EXAM-DAY CONFIDENCE</div>
+          <h1>A daily study plan<br><em>that meets your schedule.</em></h1>
+          <p class="muted">Mark topics that need practice in Notes. We'll prioritize tricky material first and build a daily revision schedule.</p>
+
+          <section class="panel">
+            <div class="row">
+              <label>Exam date <input id="exam" type="date" required></label>
+              <label>Minutes per day <input id="minutes" type="number" min="15" max="720" value="120"></label>
+              <button id="plan" class="primary">Make my plan</button>
+            </div>
+            <div id="schedule"></div>
+          </section>
+        </section>
+
+        <!-- 7. IMPORT -->
+        <section id="page-Import" class="st-page">
+          <div class="eyebrow">PORTABLE STUDY FILES</div>
+          <h1>Upload &amp; Save<br><em>your study JSON.</em></h1>
+          <p class="muted">All your summaries, topic progress, quizzes, and study plans live in your portable study file. Saves update in-place without duplicate files.</p>
+
+          <section class="panel">
+            <h2>Save &amp; Resume work</h2>
+            <div class="row">
+              <button id="save" class="primary">Save study JSON ↓</button>
+              <label class="button">Resume from study JSON <input id="import" class="file" type="file" accept=".json,application/json"></label>
+            </div>
+            <p id="saved" class="muted">No study file saved yet. Closing this tab loses unsaved work.</p>
+          </section>
+
+          <section id="empty-drop" class="panel empty" style="border:2px dashed var(--line);cursor:pointer;" aria-label="Drop your study JSON here">
+            <h2>Drop study JSON here</h2>
+            <p>Drop your <code>Studyspace-semester-*.json</code> file to load or merge your study workspace instantly.</p>
+            <div class="row" style="justify-content:center;margin-top:12px;">
+              <label class="button primary">Choose file <input class="file" id="open" type="file" accept=".json,application/json"></label>
+            </div>
+          </section>
+          <p id="status" class="muted" role="status" aria-live="polite">Choose the JSON saved by the extension. Stays in this tab.</p>
+        </section>
+
+        <!-- 8. PROGRESS -->
+        <section id="page-Progress" class="st-page">
+          <div class="eyebrow">SEMESTER PROGRESS</div>
+          <h1>Your learning<br><em>momentum.</em></h1>
+          <p class="muted">Track your coverage across each subject and identify areas that need extra attention.</p>
+
+          <div id="progress-course-bars"></div>
+          <div id="progress-weak-section" style="margin-top:24px;"></div>
+        </section>
+
+        <!-- 9. SETTINGS -->
+        <section id="page-Settings" class="st-page">
+          <div class="eyebrow">CONFIGURATION &amp; KEYS</div>
+          <h1>API keys &amp;<br><em>preferences.</em></h1>
+          <p class="muted">Keys are stored only in this browser tab's memory and are never saved in the study file.</p>
+
+          <section class="panel">
+            <h2>Google Gemini &amp; YouTube credentials</h2>
+            <div class="grid">
+              <label>Gemini API key
+                <input id="settings-gemini" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your Gemini API key">
+              </label>
+              <label>Model ID
+                <input id="settings-model" value="gemini-3.1-flash-lite" spellcheck="false">
+              </label>
+              <label>YouTube Data API v3 key · optional
+                <input id="settings-youtube" type="password" autocomplete="off" spellcheck="false" placeholder="For video recommendations">
+              </label>
+            </div>
+
+            <div style="margin-top:16px;">
+              <label class="check">
+                <input id="settings-consent" type="checkbox">
+                I agree to send selected notes to Google Gemini for analysis.
+              </label>
+              <label class="check">
+                <input id="settings-originals" type="checkbox">
+                Also save original documents in my Downloads folder.
+              </label>
+            </div>
+
+            <div class="row" style="margin-top:20px;">
+              <a class="button" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer">Get Gemini key ↗</a>
+              <a class="button" href="https://console.cloud.google.com/apis/library/youtube.googleapis.com" target="_blank" rel="noopener noreferrer">Enable YouTube API ↗</a>
+              <a class="button" href="privacy.html" target="_blank">Privacy &amp; permissions</a>
+            </div>
+          </section>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
